@@ -44,10 +44,10 @@ Sure, youll need:
 - SN74AHCT125N IC <br>
  https://www.digikey.com.au/en/products/detail/texas-instruments/SN74AHCT125N/375798
 - suitable 14Pin DIP Socket (optional) e.g. <br>
- https://www.digikey.com.au/en/products/detail/cnc-tech/245-14-1-03/3441580
-- 2.54 Headers and Sockets (optional)
-  Socket 2x 20 pin for ESP module
-  Header for Power (if desired)
+ https://www.digikey.com.au/en/products/detail/cnc-tech/245-14-1-03/3441580 <br>
+- 2.54 Headers and Sockets (optional) <br>
+  Socket 2x 20 pin for ESP module <br>
+  Header for Power (if desired) <br>
 - SK6812 LED's (ON PCB!) (if other variants are used like WS2812B you will need to debug the light: code block slightly) <br>
   https://esphome.io/components/light/index.html <br>
   n.b the White Channel is not important, can be WW, CW or NW <br>
