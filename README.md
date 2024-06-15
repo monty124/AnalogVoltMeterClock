@@ -104,7 +104,7 @@ Sure, youll need:
 - Continue to find each value and create a value MAP. <br>
 - For example for Hour:
 - find each PWM value for each number from 1 to 12
-- Record the PWM values in writeHandler.h under `const int HOUR_NEEDLE[]` where each value represents the hour, the MAP works as such: <br>
+- Record the PWM values in `writeHandler.h` under `const int HOUR_NEEDLE[]` where each value represents the hour, the MAP works as such: <br>
   
   ```
   Midnight (12), 1 AM, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1 PM, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
