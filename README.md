@@ -58,8 +58,8 @@ Sure, youll need:
 - Silicone Hookup Wire and Crimps
 - ESPHome Dev environment to build and deploy the Image <br>
   https://esphome.io/guides/getting_started_command_line <br>
-  https://esphome.io/guides/getting_started_hassio
-- Cut and Printed [stickers](./Gauges)) to replace voltmeter gauge; use the PDF or the svg can be edited and printed with Inkscape https://inkscape.org/
+  https://esphome.io/guides/getting_started_hassio <br>
+- Cut and Printed [stickers](./Gauges)) to replace voltmeter gauge; use the PDF or the svg can be edited and printed with Inkscape https://inkscape.org/ <br>
 
 
 # How To!
