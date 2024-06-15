@@ -1,0 +1,453 @@
+substitutions:
+  name: esphome-web-c38990
+  friendly_name: AnalogVoltMeterClock
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: false
+  includes:
+    - writeHandler.h
+    - bootHandler.h
+  project:
+    name: esphome.web
+    version: '1.0'
+  on_boot:
+    - priority: 600 
+      then: 
+        - lambda: |-
+            BootAnimation::startSequence();    
+
+## CONFIG START
+
+## Note, Timezone needs to be set under time component
+
+globals:
+   - id: MINIMUM_PWM_VALUE_SEC
+     type: float
+     initial_value: '10.0'
+   - id: MAXIMUM_PWM_VALUE_SEC
+     type: float
+     initial_value: '212.0'
+   - id: MINIMUM_PWM_VALUE_MIN
+     type: float
+     initial_value: '14.0'
+   - id: MAXIMUM_PWM_VALUE_MIN
+     type: float
+     initial_value: '225.0'
+   - id: MINIMUM_PWM_VALUE_HR
+     type: float
+     initial_value: '12.0'
+   - id: MAXIMUM_PWM_VALUE_HR
+     type: float
+     initial_value: '234.0'
+   - id: HOUR_PIN
+     type: int
+     initial_value: '16'
+   - id: MINUTE_PIN
+     type: int
+     initial_value: '17'
+   - id: SECOND_PIN
+     type: int
+     initial_value: '18'
+   - id: DEBUG_ON
+     type: bool
+     initial_value: 'true'
+   - id: DEBUG_SECOND_ON
+     type: bool
+     initial_value: 'false'
+   - id: CALIBRATE
+     type: bool
+     initial_value: 'false'
+   - id: AVERAGE
+     type: bool
+     initial_value: 'false'
+   - id: RED
+     type: float
+     restore_value: True
+     initial_value: '0.0'
+   - id: GREEN
+     type: float
+     restore_value: True
+     initial_value: '0.0'
+   - id: BLUE
+     type: float
+     restore_value: True
+     initial_value: '0.0'
+   - id: WHITE
+     type: float
+     restore_value: True
+     initial_value: '0.0'          
+   - id: BRIGHT
+     type: float
+     restore_value: True
+     initial_value: '0.0'
+   - id: BACKLIGHT
+     type: bool
+     restore_value: True
+     initial_value: 'true'
+
+wifi:
+    ssid: !secret wifi_ssid_24
+    password: !secret wifi_password
+    ap:
+      ssid: ${name}
+      password: "oFQVWlDVsN6j" 
+                         
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_key_freenove
+
+## NO CONFIG BELOW HERE
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+  level: DEBUG
+      
+
+ota:
+
+captive_portal:
+
+dashboard_import:
+  package_import_url: github://esphome/example-configs/esphome-web/esp32.yaml@main
+  import_full_config: true
+
+web_server:
+  port: 80
+
+switch:
+  - platform: template
+    name: "Debug"
+    optimistic: True
+    id: "debug"
+    on_turn_on: 
+      then:
+        - globals.set: 
+            id: DEBUG_ON
+            value: 'true'
+    on_turn_off: 
+      then:
+        - globals.set: 
+            id: DEBUG_ON
+            value: 'false'
+  - platform: template
+    name: "Debug Seconds"
+    optimistic: True
+    id: "debug_sec"
+    on_turn_on: 
+      then:
+        - globals.set: 
+            id: DEBUG_SECOND_ON
+            value: 'true'
+    on_turn_off: 
+      then:
+        - globals.set: 
+            id: DEBUG_SECOND_ON
+            value: 'false'
+  - platform: template
+    name: "Average Gauge Needle"
+    optimistic: True
+    id: "average"
+    on_turn_on: 
+      then:
+        - globals.set: 
+            id: AVERAGE
+            value: 'true'
+    on_turn_off: 
+      then:
+        - globals.set: 
+            id: AVERAGE
+            value: 'false'
+  - platform: template
+    name: "Calibrate"
+    optimistic: True
+    id: "calibrate"
+    on_turn_on: 
+      then:
+        - globals.set: 
+            id: CALIBRATE
+            value: 'true'
+        - lambda: |-
+              analogWrite( id(HOUR_PIN), 0);
+              analogWrite( id(MINUTE_PIN), 0);
+              analogWrite( id(SECOND_PIN), 0);
+    on_turn_off: 
+      then:
+        - globals.set: 
+            id: CALIBRATE
+            value: 'false'
+        - lambda: |-
+                auto time = id(esptime).now();
+                WritePinValue::SecondHandle(id(SECOND_PIN), time.second);
+                WritePinValue::MinuteHandle(id(MINUTE_PIN), time.minute);
+                WritePinValue::HourHandle(id(HOUR_PIN), time.hour);            
+  - platform: template
+    name: "LED: Calibrate"
+    optimistic: True
+    id: "calibrateled"
+    assumed_state: False
+    on_turn_on: 
+      then:
+        - light.turn_on: backlight
+    on_turn_off: 
+      then:
+        - light.turn_off: backlight
+  - platform: template
+    name: "Disable Backlight"
+    optimistic: True
+    id: "disablebacklight"
+    on_turn_on: 
+      then:
+        - globals.set: 
+            id: BACKLIGHT
+            value: 'true'
+    on_turn_off: 
+      then:
+        - globals.set: 
+            id: BACKLIGHT
+            value: 'false'
+
+light:
+  - platform: esp32_rmt_led_strip
+    num_leds: 6
+    rgb_order: GRB
+    rmt_channel: 0
+    pin: GPIO23
+    chipset: SK6812
+    is_rgbw: True
+    internal: True
+    id: backlight
+    on_turn_on: 
+      then:
+        - lambda: |-
+                  auto call = id(backlight).make_call(); 
+                  call.set_rgbw(id(RED)/ 100.0,id(GREEN)/ 100.0,id(BLUE)/ 100.0,id(WHITE)/ 100.0);
+                  call.set_color_brightness(id(BRIGHT) / 100.0);
+                  call.perform();
+        
+output:
+  - platform: ledc
+    pin: 2
+    id: statusled
+    
+
+number:
+  - platform: template
+    name: "HOUR CALIBRATE"
+    optimistic: true
+    restore_value: false
+    min_value: 0
+    max_value: 255
+    step: 1
+    id: hour_gauge_value
+    on_value: 
+      then:
+        - lambda: |-
+              if (id(CALIBRATE)){
+              analogWrite( id(HOUR_PIN), x);
+              }
+  - platform: template
+    name: "MIN CALIBRATE"
+    optimistic: true
+    restore_value: false
+    min_value: 0
+    max_value: 255
+    step: 1
+    id: min_gauge_value
+    on_value: 
+      then:
+        - lambda: |-
+              if (id(CALIBRATE)){
+              analogWrite( id(MINUTE_PIN), x);
+              }
+  - platform: template
+    name: "SEC CALIBRATE"
+    optimistic: true
+    restore_value: false
+    min_value: 0
+    max_value: 255
+    step: 1
+    id: sec_gauge_value
+    on_value: 
+      then:
+        - lambda: |-
+              if (id(CALIBRATE)){
+              analogWrite( id(SECOND_PIN), x);
+              }
+  - platform: template
+    name: "LED: Red Level"
+    max_value: 100
+    min_value: 0
+    step: 1
+    restore_value: True
+    id: red_level
+    optimistic: True
+    on_value: 
+      then:
+        - globals.set: 
+            id: RED
+            value: !lambda |-
+              return x;
+        - lambda: |-
+                  auto call = id(backlight).make_call(); 
+                  call.set_rgbw(id(RED)/ 100.0,id(GREEN)/ 100.0,id(BLUE)/ 100.0,id(WHITE)/ 100.0);
+                  call.set_color_brightness(id(BRIGHT) / 100.0);
+                  call.perform();
+  - platform: template
+    name: "LED: Green Level"
+    max_value: 100
+    min_value: 0
+    step: 1
+    restore_value: True
+    id: green_level
+    optimistic: True
+    on_value: 
+      then:
+        - globals.set: 
+            id: GREEN
+            value: !lambda |-
+              return x;
+        - lambda: |-
+                  auto call = id(backlight).make_call(); 
+                  call.set_rgbw(id(RED)/ 100.0,id(GREEN)/ 100.0,id(BLUE)/ 100.0,id(WHITE)/ 100.0);
+                  call.set_color_brightness(id(BRIGHT) / 100.0);
+                  call.perform();
+  - platform: template
+    name: "LED: Blue Level"
+    max_value: 100
+    min_value: 0
+    step: 1
+    restore_value: True
+    id: blue_level
+    optimistic: True
+    on_value: 
+      then:
+        - globals.set: 
+            id: BLUE
+            value: !lambda |-
+              return x;
+        - lambda: |-
+                  auto call = id(backlight).make_call(); 
+                  call.set_rgbw(id(RED)/ 100.0,id(GREEN)/ 100.0,id(BLUE)/ 100.0,id(WHITE)/ 100.0);
+                  call.set_color_brightness(id(BRIGHT) / 100.0);
+                  call.perform();
+  - platform: template
+    name: "LED: White Level"
+    max_value: 100
+    min_value: 0
+    step: 1
+    restore_value: True
+    id: white_level
+    optimistic: True
+    on_value: 
+      then:
+        - globals.set: 
+            id: WHITE
+            value: !lambda |-
+              return x;
+        - lambda: |-
+                  auto call = id(backlight).make_call(); 
+                  call.set_rgbw(id(RED)/ 100.0,id(GREEN)/ 100.0,id(BLUE)/ 100.0,id(WHITE)/ 100.0);
+                  call.set_color_brightness(id(BRIGHT) / 100.0);
+                  call.perform();
+  - platform: template
+    name: "LED: Colour Brightness"
+    max_value: 100
+    min_value: 0
+    step: 1
+    restore_value: True
+    id: color_brightness
+    optimistic: True
+    on_value: 
+      then:
+        - globals.set: 
+            id: BRIGHT
+            value: !lambda |-
+              return x;
+        - lambda: |-
+                  auto call = id(backlight).make_call(); 
+                  call.set_rgbw(id(RED)/ 100.0,id(GREEN)/ 100.0,id(BLUE)/ 100.0,id(WHITE)/ 100.0);
+                  call.set_color_brightness(id(BRIGHT) / 100.0);
+                  call.perform();
+
+time:
+  ## Set Timezone & source sntp or HA
+  #- platform: sntp
+  - platform: homeassistant
+    timezone: Australia/Sydney
+  ## End Settings
+    id: esptime
+    on_time_sync:
+      then:
+        lambda: |-
+                auto time = id(esptime).now();
+                char tm[30];
+                strftime(tm, sizeof(tm), "%Y-%m-%d %X", localtime(&time.timestamp));
+                ESP_LOGD("custom", "Time Sync, Current Time: %s", tm);
+                if (!(id(CALIBRATE))){
+                WritePinValue::SecondHandle(id(SECOND_PIN), time.second);
+                WritePinValue::MinuteHandle(id(MINUTE_PIN), time.minute);
+                WritePinValue::HourHandle(id(HOUR_PIN), time.hour);
+                }
+    on_time:
+        - cron: '* * * * * *'
+          then:
+             lambda: |-
+                auto time = id(esptime).now();
+                if (!(id(CALIBRATE))){
+                WritePinValue::SecondHandle(id(SECOND_PIN), time.second);
+                }
+        - cron: '00 /1 * * * *'
+          then:
+             lambda: |-
+                auto time = id(esptime).now();
+                if (!(id(CALIBRATE))){
+                WritePinValue::MinuteHandle(id(MINUTE_PIN), time.minute);                
+                }
+        - cron: '* 00 /1 * * *'
+          then:
+             lambda: |-
+                auto time = id(esptime).now();
+                if (!(id(CALIBRATE))){
+                WritePinValue::HourHandle(id(HOUR_PIN), time.hour);
+                }
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO36
+    internal: True
+    device_class: motion
+    id: proximity
+    filters: 
+      - delayed_on_off: 
+          time_on: 10ms
+          time_off: 10s
+      - settle: 5ms
+    on_press:
+      then: 
+        - if: 
+            condition:
+              - lambda: |-
+                        return id(disablebacklight).state ;
+            then:
+              - logger.log: "Backlight Disabled"
+            else:
+              - light.turn_on: backlight
+              - output.turn_on: statusled
+    on_release:
+      - if: 
+            condition:
+              - lambda: |-
+                        return id(disablebacklight).state ;
+            then:
+              - logger.log: "Backlight Disabled"
+            else:
+              - light.turn_off: backlight 
+              - output.turn_off: statusled

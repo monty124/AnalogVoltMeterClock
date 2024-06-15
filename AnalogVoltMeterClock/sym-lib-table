@@ -1,0 +1,6 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "ESP32-DEVKIT-V1")(type "KiCad")(uri "W:/git/AnalogVoltMeterClock/Symbols/ESP32-DEVKIT-V1.kicad_sym")(options "")(descr ""))
+  (lib (name "SN74AHCT125N")(type "KiCad")(uri "W:/git/AnalogVoltMeterClock/Symbols/SN74AHCT125N.kicad_sym")(options "")(descr ""))
+  (lib (name "FreeNoveESP32Wroom")(type "KiCad")(uri "W:/git/AnalogVoltMeterClock/Symbols/FreeNoveESP32Wroom.kicad_sym")(options "")(descr ""))
+)
