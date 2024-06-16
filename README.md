@@ -72,7 +72,7 @@ Sure, youll need:
 - REASSEMBLE! <br>
   <img src= "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZG9kYTcyZXJqNmN4ZmF5MW5ybzBubnV4aWs5dmp2OGs5a2VsNGVzaiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/27P3eknARh4c/giphy.gif" /> <br>
 - Assemble your PCB
-- Write the Base esphome image to your module https://web.esphome.io/ and connect to WIFI
+- Write the Base esphome image to your module https://web.esphome.io/ and connect to WIFI remember to also to include the `.h` files
 - Edit the ESPHome Yaml file where required 
   - set MIN and MAX PWM
   - (optional) RGBW and Bright values
