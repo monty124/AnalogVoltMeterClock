@@ -59,7 +59,7 @@ Sure, youll need:
 - ESPHome Dev environment to build and deploy the Image <br>
   https://esphome.io/guides/getting_started_command_line <br>
   https://esphome.io/guides/getting_started_hassio <br>
-- Cut and Printed [stickers](./Gauges)) to replace voltmeter gauge; use the PDF or the svg can be edited and printed with Inkscape https://inkscape.org/ <br>
+- Cut and Printed [stickers](/Gauges)) to replace voltmeter gauge; use the PDF or the svg can be edited and printed with Inkscape https://inkscape.org/ <br>
 
 
 # How To!
@@ -84,6 +84,8 @@ Sure, youll need:
 - Import into Home Assistant (optional)
 
 # Calibration
+
+[Excel sheets](/SpreadSheets) added to help calibrate! 
 
 ## PWM
 
@@ -147,11 +149,23 @@ You are able to fine tune the needle using the screw on the front of the dial
 
 This value will save into eeprom but will not be retained if the module is reflashed, you can code these into the globals but!
 
+## U2 Jumpers
+
+The SN74AHCT125N can be a little .... sensitive and as we are only using one input and output a circuit has been built in where by if you accidently blow input/output 1A/1Y you can reconfgure the jumpers to use the other inputs and outputs! This avoids you throwing away an IC because one IO has failed. Hopefully.
+
+<img src="U2 Circuit.png" /> <br>
+
+This table should help explain what jumpers you need to bridge. Note you will need to CUT the DEFAULT jumpers on JP3 and JP4 if you wish to use IO's 3 or 4, and cut the DEFAULT jumper on JP1 and JP5 to use IO 2
+
+<img src="U2 Jumpers.png" /> <br>
+
+More info can be found in the datasheet in the [repo](/sn74ahct125.pdf)
+
 ## To Do!
 
 - Integrate a PCF8563 RTC module option for time keeping offline https://www.aliexpress.com/item/1005006438572175.html
 - Code Improvements and tidy up
-- Excel sheet for calibration
+- ~~Excel sheet for calibration~~
 - Document matrix for IC
 - 3D rear cover
 - Actual Assembly (still waiting on parts!)
