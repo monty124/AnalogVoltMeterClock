@@ -1,6 +1,6 @@
 substitutions:
-  name: esphome-web-c38990
-  friendly_name: AnalogVoltMeterClock
+  name: esphome-web-c38990 #may want to change the name here
+  friendly_name: FreeNoveDev #and here
 
 esphome:
   name: ${name}
@@ -88,17 +88,17 @@ globals:
      initial_value: 'true'
 
 wifi:
-    ssid: !secret wifi_ssid_24
-    password: !secret wifi_password
+    ssid: !secret wifi_ssid_24 #set your secrets in esphome
+    password: !secret wifi_password #set your secrets in esphome
     ap:
       ssid: ${name}
-      password: "oFQVWlDVsN6j" 
+      password: !secret local_ap_pw #set your secrets in esphome
                          
 
 # Enable Home Assistant API
 api:
   encryption:
-    key: !secret api_key_freenove
+    key: !secret api_key_freenove #set your secrets in esphome
 
 ## NO CONFIG BELOW HERE
 
@@ -109,15 +109,10 @@ esp32:
 
 logger:
   level: DEBUG
-      
-
+    
 ota:
 
 captive_portal:
-
-dashboard_import:
-  package_import_url: github://esphome/example-configs/esphome-web/esp32.yaml@main
-  import_full_config: true
 
 web_server:
   port: 80

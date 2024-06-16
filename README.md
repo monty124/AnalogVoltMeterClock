@@ -76,8 +76,15 @@ Sure, youll need:
 - Edit the ESPHome Yaml file where required 
   - set MIN and MAX PWM
   - (optional) RGBW and Bright values
-  - TimeZone (if not AEST)
-  - Disable Home Assistant api (remove encryption and key) if you dont use HA
+  - TimeZone (if not AEST) and or change to sntp see below
+  - Disable Home Assistant api (remove encryption and key) if you dont use HA (also change time to sntp) <br>
+    i.e:
+    ```
+    - platform: sntp
+    #- platform: homeassistant
+    timezone: Australia/Brisbane
+    ```
+
 - Build and Write the config to the module
 - All should be working! 
 - Connect to the Module Web Page and set LED colour
