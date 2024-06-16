@@ -166,8 +166,8 @@ More info can be found in the datasheet in the [repo](/sn74ahct125.pdf)
 - Integrate a PCF8563 RTC module option for time keeping offline https://www.aliexpress.com/item/1005006438572175.html
 - Code Improvements and tidy up
 - ~~Excel sheet for calibration~~
-- Document matrix for IC
-- 3D rear cover
+- ~~Document matrix for IC~~
+- 3D rear cover (STARTED!)
 - Actual Assembly (still waiting on parts!)
 - gif of movement
 
