@@ -25,7 +25,7 @@ Sure, youll need:
   https://www.aliexpress.com/item/1005003489268646.html <br>
   <img src="SO45-V-Pointer-Round-Type.png" width="100" height="100"/>
 - 3x 3.9K Resistors OR any value between 2 - 5 K however you will need to work out your own calibration matrix
-- PCB (gerber files are included [here](./AnalogVoltMeterClock/AnalogVoltMeterClock/Gerber))
+- PCB (gerber files are included [here](/AnalogVoltMeterClock/Gerber))
   <img src="AnalogVoltMeterClock.png"/>
   <img src="FrAnalogVoltMeterClock.png"/>
 - "SW-420" Vibration Sensor <br>
